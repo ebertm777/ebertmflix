@@ -11,10 +11,11 @@ function Footer() {
         criado com
         {' '}
         <a href="https://github.com/ebertm777">
-          REACT
+          react
         </a>
       </p>
     </FooterBase>
   );
 }
+
 export default Footer;
