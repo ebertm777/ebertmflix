@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageDefault from '../../../components/PageDefault';
 import FormField from '../../../components/FormField';
@@ -27,6 +27,21 @@ function CategoriaRegistro() {
         );
     }
 
+    useEffect(() => {
+        if (window.location.href.includes('localhost')) {
+            const URL = 'http://localhost:8080/categorias';
+            fetch(URL)
+                .then(async (respostaDoServer) => {
+                    if (respostaDoServer.ok) {
+                        const resposta = await respostaDoServer.json();
+                        setCategorias(resposta);
+                        return;
+                    }
+                    throw new Error('Não foi possível pegar os dados');
+                })
+        }
+    }, []);
+
     return (
         <PageDefault>
             <h1>
@@ -54,7 +69,7 @@ function CategoriaRegistro() {
 
                 <FormField
                     label="Descrição"
-                    type="text"
+                    type="textarea"
                     name="descrição"
                     value={values.descrição}
                     onChange={errorHandler}
@@ -73,9 +88,15 @@ function CategoriaRegistro() {
                 </Button>
             </form>
 
+            {categorias.length === 0 && (
+                <div>
+                    Loading...
+                </div>
+            )}
+
             <ul>
-                {categorias.map((categoria, indice) => (
-                    <li key={`${categoria}${indice}`}>
+                {categorias.map((categoria) => (
+                    <li key={`${categoria.nome}`}>
                         {categoria.nome}
                     </li>
                 ))}
