@@ -15,7 +15,7 @@ const FormFieldWrapper = styled.div`
 const Label = styled.label``;
 
 Label.Text = styled.span`
-  color: #E5E5E5;
+  color: #000;
   height:54px;
   position: absolute; 
   top: 0;
@@ -33,8 +33,8 @@ Label.Text = styled.span`
 `;
 
 const Input = styled.input`
-  background: #0086FF;
-  color: #F5F5F5;
+  background: #ffffff;
+  color: #000;
   display: block;
   width: 100%;
   height: 56px;
@@ -43,7 +43,7 @@ const Input = styled.input`
   outline: 0;
   border: 1;
   border-top: 2px solid transparent;
-  border-bottom: 4px solid #FFFFFF;
+  border-bottom: 6px solid #0086FF;
   
   padding: 14px 14px;
   margin-bottom: 75px;
