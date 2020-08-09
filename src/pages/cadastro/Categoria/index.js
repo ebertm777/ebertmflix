@@ -3,76 +3,65 @@ import { Link } from 'react-router-dom';
 import PageDefault from '../../../components/PageDefault';
 import FormField from '../../../components/FormField';
 import Button from '../../../components/Button';
+import useForm from '../../../hooks/useForm';
 
-function CategoriaRegistro() {
-    const valorInicial = {
+function CadastroCategoria() {
+    const valoresIniciais = {
         nome: '',
-        descrição: '',
+        descricao: '',
         cor: '',
     };
+
+    const { handleChange, values, clearForm } = useForm(valoresIniciais);
+
     const [categorias, setCategorias] = useState([]);
-    const [values, setValues] = useState(valorInicial);
-
-    function setValue(chave, valor) {
-        setValues({
-            ...values,
-            [chave]: valor,
-        });
-    }
-
-    function errorHandler(infoDoEvento) {
-        setValue(
-            infoDoEvento.target.getAttribute('name'),
-            infoDoEvento.target.value,
-        );
-    }
 
     useEffect(() => {
-        if (window.location.href.includes('localhost')) {
-            const URL = 'https://koalaplay.herokuapp.com/categorias';
-            fetch(URL)
-                .then(async (respostaDoServer) => {
-                    if (respostaDoServer.ok) {
-                        const resposta = await respostaDoServer.json();
-                        setCategorias(resposta);
-                        return;
-                    }
-                    throw new Error('Não foi possível pegar os dados');
-                })
-        }
+        const URL_TOP = window.location.hostname.includes('localhost')
+            ? 'http://localhost:8080/categorias'
+            : 'https://koalaplay.herokuapp.com/categorias';
+
+        fetch(URL_TOP)
+            .then(async (respostaDoServidor) => {
+                const resposta = await respostaDoServidor.json();
+                setCategorias([
+                    ...resposta,
+                ]);
+            });
+
     }, []);
 
     return (
         <PageDefault>
             <h1>
-                Registro de Categoria:
+                Cadastro de Categoria:
         {values.nome}
             </h1>
 
-            <form onSubmit={function handleSubmit(infoDoEvento) {
-                infoDoEvento.preventDefault();
+            <form onSubmit={function handleSubmit(infosDoEvento) {
+                infosDoEvento.preventDefault();
                 setCategorias([
                     ...categorias,
                     values,
                 ]);
-                setValues(valorInicial);
+
+                clearForm();
             }}
             >
 
                 <FormField
-                    label="Categoria"
-                    type="text"
+                    label="Nome da Categoria"
                     name="nome"
                     value={values.nome}
-                    onChange={errorHandler}
+                    onChange={handleChange}
                 />
 
                 <FormField
                     label="Descrição"
                     type="textarea"
-                    name="descrição"
-                    value={values.descrição}
-                    onChange={errorHandler}
+                    name="descricao"
+                    value={values.descricao}
+                    onChange={handleChange}
                 />
 
                 <FormField
@@ -80,24 +69,25 @@ function CategoriaRegistro() {
                     type="color"
                     name="cor"
                     value={values.cor}
-                    onChange={errorHandler}
+                    onChange={handleChange}
                 />
 
                 <Button>
-                    Registrar
-                </Button>
+                    Cadastrar
+        </Button>
             </form>
 
             {categorias.length === 0 && (
                 <div>
+
                     Loading...
                 </div>
             )}
 
             <ul>
                 {categorias.map((categoria) => (
-                    <li key={`${categoria.nome}`}>
-                        {categoria.nome}
+                    <li key={`${categoria.titulo}`}>
+                        {categoria.titulo}
                     </li>
                 ))}
             </ul>
@@ -108,4 +98,5 @@ function CategoriaRegistro() {
         </PageDefault>
     );
 }
-export default CategoriaRegistro;
+
+export default CadastroCategoria;
